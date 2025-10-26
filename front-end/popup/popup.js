@@ -35,12 +35,14 @@ document.getElementById('inputText').addEventListener('keydown', (e) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender), async ()=> {
-  if (message.type === "TEXT_SELECTED") {
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const data = await chrome.storage.local.get("selectedText");
+  if (data.selectedText) {
+    document.getElementById("inputText").value = data.selectedText;
+
     const language = document.getElementById('languageSelect').value;
-    const translation = await askAI(language, text);
-    selectedText = message.text;
-    document.getElementById('inputText').setAttribute('value', message.text);
+    const translation = await askAI(language, data.selectedText);
     document.getElementById('output').textContent = translation;
   }
 });

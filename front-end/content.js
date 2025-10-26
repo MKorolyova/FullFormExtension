@@ -1,75 +1,84 @@
 
-document.addEventListener("mouseup", () => {
-  const selectedText = window.getSelection().toString().trim();
+let selectionButton = null;
+let currentSelectedText = '';
 
-  if (selectedText.length > 0) {
-    console.log("Selected text from content script:", selectedText);
-    chrome.runtime.sendMessage({ type: "TEXT_SELECTED", text: selectedText });
-    chrome.runtime.sendMessage({ type: "OPEN_TRANSLATOR", text: selectedText });
+function createOrShowSelectionButton(x, y) {
+  if (!selectionButton) {
+    selectionButton = document.createElement('button');
+    selectionButton.textContent = 'Perform Action'; 
+    selectionButton.id = 'chrome-ext-selection-button'; 
 
-  }
-});
-
-function showPopup(text) {
-  chrome.runtime.sendMessage({ type: "OPEN_POPUP", text });
-}
-
-let translateButton = null;
-
-// Function to remove the button
-function removeButton() {
-  if (translateButton) {
-    translateButton.remove();
-    translateButton = null;
-  }
-}
-
-document.addEventListener("mouseup", (event) => {
-  const selectedText = window.getSelection().toString().trim();
-  removeButton(); // remove previous button
-
-  if (selectedText.length > 0) {
-    console.log("Selected text:", selectedText);
-
-    // Create the floating button
-    translateButton = document.createElement("button");
-    translateButton.innerText = "🔤 Translate";
-    translateButton.id = "translate-btn";
-
-    // Style the button (defined also in CSS for better control)
-    translateButton.style.position = "absolute";
-    translateButton.style.top = `${event.pageY + 10}px`;
-    translateButton.style.left = `${event.pageX + 10}px`;
-    translateButton.style.zIndex = "999999";
-    translateButton.style.padding = "6px 10px";
-    translateButton.style.background = "#4A90E2";
-    translateButton.style.color = "white";
-    translateButton.style.border = "none";
-    translateButton.style.borderRadius = "6px";
-    translateButton.style.cursor = "pointer";
-    translateButton.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
-
-    document.body.appendChild(translateButton);
-
-    // Button click handler
-    translateButton.addEventListener("click", () => {
-      console.log("Button clicked for:", selectedText);
-      showPopup(selectedText, event.pageX, event.pageY);
-      removeButton();
+    Object.assign(selectionButton.style, {
+      position: 'absolute',
+      zIndex: '99999', 
+      backgroundColor: '#4285F4', 
+      color: 'white',
+      border: 'none',
+      padding: '8px 12px',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+      transition: 'opacity 0.2s ease-in-out',
+      opacity: '0' 
     });
+
+
+    selectionButton.addEventListener('click', (event) => {
+      event.stopPropagation(); 
+      console.log('Button clicked! Selected text:', currentSelectedText);
+      chrome.runtime.sendMessage({ type: "OPEN_POPUP", text: currentSelectedText });
+      hideSelectionButton();
+      window.getSelection().empty();
+    });
+
+    document.body.appendChild(selectionButton);
+  }
+
+  selectionButton.style.left = `${x}px`;
+  selectionButton.style.top = `${y}px`;
+  selectionButton.style.opacity = '1';
+  selectionButton.style.pointerEvents = 'auto';
+}
+
+function hideSelectionButton() {
+  if (selectionButton) {
+    selectionButton.style.opacity = '0'; 
+    selectionButton.style.pointerEvents = 'none';
+
+    setTimeout(() => {
+      if (selectionButton && selectionButton.parentNode) {
+        selectionButton.parentNode.removeChild(selectionButton);
+        selectionButton = null; 
+      }
+    }); 
+  }
+}
+
+
+document.addEventListener('mouseup', (event) => {
+  const selection = window.getSelection();
+  currentSelectedText = selection.toString().trim();
+
+  if (currentSelectedText.length > 0 && !selectionButton?.contains(event.target)) {
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    const buttonX = rect.right + window.scrollX - 50; 
+    const buttonY = rect.bottom + window.scrollY + 5; 
+
+    createOrShowSelectionButton(buttonX, buttonY);
+  } else if (!selectionButton?.contains(event.target)) { 
+    hideSelectionButton();
   }
 });
 
-// Remove the button if user clicks elsewhere
-document.addEventListener("click", (e) => {
-  if (translateButton && !translateButton.contains(e.target)) {
-    removeButton();
+
+document.addEventListener('mousedown', (event) => {
+  if (selectionButton && !selectionButton.contains(event.target) && window.getSelection().toString().trim().length === 0) {
+    hideSelectionButton();
   }
 });
 
-  // Click anywhere else → close popup
-  document.addEventListener("click", (e) => {
-    if (!popup.contains(e.target)) popup.remove();
-  });
 
 
