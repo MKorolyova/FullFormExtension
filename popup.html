@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Translator</title>
-    <link rel="stylesheet" href="options.css" />
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <div class="container">
@@ -10,7 +10,7 @@
 
       <section class="setting-section">
         <p>Select language</p>
-        <select id="targetLanguage" class="select-field">
+        <select id="languageSelect" class="select-field">
           <option value="es">Spanish</option>
           <option value="fr">French</option>
           <option value="de">German</option>
@@ -18,12 +18,13 @@
         </select>
       </section>
 
-      <div class="footer">
-        <button id="saveSettings" class="button primary">
-          Save All Settings
-        </button>
-        <span id="saveStatus" class="save-status"></span>
-      </div>
+      <p>Type text to translate:</p>
+      <textarea id="inputText" class="text-area" rows="4"></textarea>
+      <button id="translateBtn" class="button primary">Translate</button>
+      <h2>Translation:</h2>
+      <div id="output" class="output-box"></div>
     </div>
   </body>
+
+  <script src="popup.js"></script>
 </html>

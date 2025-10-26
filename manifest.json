@@ -9,7 +9,7 @@
         "storage" 
     ],
     "action": {
-        "default_popup": "hello.html",
-        "default_icon": "default_icon.png"
+        "default_popup": "popup.html",
+        "default_icon": "RowdyHackthon.png"
     }
 }
