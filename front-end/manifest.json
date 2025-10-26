@@ -1,0 +1,21 @@
+{
+    "name": "FullForm",
+    "version": "1.0",
+    "description":"Searches for slang terms or abbreviation and provides a meaning",
+    "manifest_version": 3,
+    "permissions": [
+        "activeTab", 
+        "scripting", 
+        "storage" 
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://*/"],
+            "js": ["background.js"]
+        }
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": "images/RowdyHackthon.png"
+    }
+}
