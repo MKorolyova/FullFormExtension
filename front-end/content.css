@@ -1,0 +1,6 @@
+#translate-btn {
+  transition: background 0.2s;
+}
+#translate-btn:hover {
+  background: #3b7bc1;
+}
