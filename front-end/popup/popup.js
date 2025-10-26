@@ -1,16 +1,8 @@
-
-let selectedText = "";
- document.getElementById('inputText').setAttribute('value', selectedText);
-
-
-async function askAI(language, text) {
+async function askAI(url) {
   try {
-    const response = await fetch(' http://127.0.0.1:8000/' + 'language/' + language.toString() + '/msg/' + text.toString());
-
+    const response = await fetch(url);
     if (!response.ok) throw new Error('Network response was not ok');
-    const data = await response.json();
-    return data.translation; 
-  
+    return response; 
   } catch (error) {
     console.error('Fetch error:', error);
     return "Error fetching translation";
@@ -22,8 +14,9 @@ document.getElementById('translateBtn').addEventListener('click', async () => {
   const text = document.getElementById('inputText').value.trim();
 
   if (text){
-    const translation = await askAI(language, text);
-    document.getElementById('output').textContent = translation;
+    const response = await askAI(`http://127.0.0.1:8000/language/${language.toString()}/msg/${text.toString()}`);
+    const data = await response.json();
+    document.getElementById('output').textContent = data.translation;
   }
 
 });
@@ -38,12 +31,17 @@ document.getElementById('inputText').addEventListener('keydown', (e) => {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const data = await chrome.storage.local.get("selectedText");
+  const response = await askAI(`http://127.0.0.1:8000/languages/`);
+  const languagesData = await response.json();
+  const languages = languagesData.languages.split(',').map(lang => lang.trim());
+  document.getElementById('languageSelect').innerHTML = languages.map(lang => `<option value="${lang}">${lang}</option>`).join('');
   if (data.selectedText) {
     document.getElementById("inputText").value = data.selectedText;
 
     const language = document.getElementById('languageSelect').value;
-    const translation = await askAI(language, data.selectedText);
-    document.getElementById('output').textContent = translation;
+    const response = await askAI(`http://127.0.0.1:8000/language/${language}/msg/${data.selectedText}`);
+    const translationData = await response.json();
+    document.getElementById('output').textContent = translationData.translation;
   }
 });
 

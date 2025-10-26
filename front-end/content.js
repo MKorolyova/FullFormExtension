@@ -79,6 +79,3 @@ document.addEventListener('mousedown', (event) => {
     hideSelectionButton();
   }
 });
-
-
-
