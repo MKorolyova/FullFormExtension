@@ -8,14 +8,17 @@
         "scripting", 
         "storage" 
     ],
-    "content_scripts": [
-        {
-            "matches": ["https://*/"],
-            "js": ["background.js"]
-        }
-    ],
     "action": {
         "default_popup": "popup/popup.html",
         "default_icon": "images/RowdyHackthon.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+    {
+      "matches": ["<all_urls>"], 
+      "js": ["content.js"]
     }
+  ]
 }
