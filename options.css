@@ -55,7 +55,7 @@ p {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1em;
-  box-sizing: border-box; /* Include padding in element's total width and height */
+  box-sizing: border-box; 
 }
 
 .select-field:focus,
@@ -89,7 +89,7 @@ p {
 .footer {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Pushes save button and status to the right */
+    justify-content: flex-end; 
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid #eee;
