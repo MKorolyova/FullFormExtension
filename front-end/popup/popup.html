@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Translator</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+
+    <div class="container">
+      <h1 class="title">Full Form</h1>
+
+      <section class="setting-section">
+        <p>Select language</p>
+        <select id="languageSelect" class="select-field">
+        </select>
+      </section>
+
+      <p>Type text to translate:</p>
+      <textarea id="inputText" class="text-area" rows="4"></textarea>
+  
+      <p>Translation:</p>
+      <div id="output" class="output-box"></div>
+
+      <button id="translateBtn" class="button primary">Translate</button>
+    </div>
+
+  </body>
+
+  <script type="module" src="popup.js"></script>
+</html>
